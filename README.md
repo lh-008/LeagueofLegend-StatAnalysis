@@ -59,42 +59,35 @@ Let's take a look at the distribution of gamelength from the dataset.
   height="600"
   frameborder="0"
 ></iframe>
-
 The distribution is nearly normal with a slight left skew, reflecting the typical behavior in League of Legends matches. Fewer games end very early or very late, indicating that the data in this dataset is well-suited for analysis.
 
 Let's also take a look at the distribution of total gold from the dataset.
-
 <iframe
   src="assets/distribution_total_gold.html"
   width="800"
   height="600"
   frameborder="0"
 ></iframe>
-
 The empircal distribution is again, very closely to normal. This distribution represent the normal behavior of league of legends gameplay.
 
 ### Bivariate Analysis
 
 Let's take a look at how Rift Herald impact the outcome of the game using the plot below.
-
 <iframe
   src="assets/win_rate_comparison.html"
   width="800"
   height="600"
   frameborder="0"
 ></iframe>
-
 The plot shows that teams securing the first Rift Herald have a higher win rate compared to those without it. This suggests that the Rift Herald is an important and impactful objective, significantly influencing the outcome of games. Securing this objective likely provides strategic advantages such as early map control or turret pressure, which leads to higher chance of victory.
 
 Let's also take a look at how Rift Herald impact team gold at 15 minutes.
-
 <iframe
   src="assets/gold15_comparison.html"
   width="800"
   height="600"
   frameborder="0"
 ></iframe>
-
 Teams that secure the Rift Herald have a higher total gold at the 15-minute mark compared to those without it. This suggests that the Rift Herald provides an early-game advantage. In a game like League of Legends, such early advantages often 'snowball', growing larger over time and can potentially influencing the outcome of the match.
 
 ### Interesting Aggregates
@@ -169,32 +162,28 @@ In our analysis of missingness dependency, we wanted to see if the missingness o
 Below is the observed distribution of `position` when `cspm` is missing and not missing.
 
 After we performed our permutation tests, we found that the observed statistic for this permutation test is: 0.4274423815183682, and the p-value is 0.0. The plot below shows the empirical distribution of the TVD for the test.
-
 <iframe
-  src="assets/missing_1.html"
+  src="assets/missing_dist1.html"
   width="800"
   height="600"
   frameborder="0"
 ></iframe>
-
 Since the p-value is less than the 0.05 significance level, we reject the null hypothesis. Thus, the missingness of `cspm` depends on the `position` column.
 
-Null Hypothesis: Distribution of `result` when `cspm` is missing is the same as the distribution of `side` when `cspm` is not missing.
+**Null Hypothesis**: Distribution of `result` when `cspm` is missing is the same as the distribution of `side` when `cspm` is not missing.
 
-Alternative Hypothesis: Distribution of `result` when `cspm` is missing is NOT the same as the distribution of `side` when `cspm` is not missing.
+**Alternative Hypothesis**: Distribution of `result` when `cspm` is missing is NOT the same as the distribution of `side` when `cspm` is not missing.
 
 Below is the observed distribution of `result` when `cspm` is missing and not missing.
 input dist
 
 After we performed permutation tests, we found that the observed statistic for this permutation test is: 0.0, and the p-value is 1.0. The plot below shows the empirical distribution of the TVD for the test.
-
 <iframe
-  src="assets/missing_2.html"
+  src="assets/missing_dist2.html"
   width="800"
   height="600"
   frameborder="0"
 ></iframe>
-
 Since the p-value is greater than the 0.05 significance level, we fail to reject the null hypothesis. Thus, the missingness of `cspm` does not depend on the `result` column.
 
 # Hypothesis Testing
@@ -243,6 +232,8 @@ Our final model also uses a Random Forest Classifier as opposed to the Decision 
 | recall    | 0.953214 | 0.992499 |   0.972935 |
 | f1-score  | 0.972282 | 0.973557 |   0.972935 |
 
+The accuracy score of our final model is **0.9719934102141681**, meaning that our model is able to correctly predict roughly **97.20%** of our data. If we look at the F-1 score, it is **97.23%**, meaning that both of our precision and recall are close to 1. We have achieved a large improvement in both our accuracy and F-1 score compared to our baseline model. These improvements suggest that the changes that we made to our model are sufficient and effective in accurately predicting the outcome of a game.
+
 # Fairness Analysis
 
 In this section, we aim to assess if our model is fair among different groups. The question we want to address here is: “Does my model perform worse for teams who have less kills than the mean amount of kills than it does for teams who have over the mean amount of kills?” To answer this question, we performed a permutation test and examined the result of the difference in accuracy between the two groups.
@@ -256,12 +247,10 @@ Our model is unfair. Its accuracy is higher for teams with kills below the mean.
 **Test Statistic**: Difference in accuracy (below minus above mean).
 
 **Significance Level**: 0.05
-
 <iframe
   src="assets/fairness_dist.html"
   width="800"
   height="600"
   frameborder="0"
 ></iframe>
-
 After performing the permutation tests, the p-value we got was 0.0, which is smaller than the 0.05 significance level. As a result, we reject the null hypothesis. This outcome implies that our model predicts teams with kills below the mean more accurately than teams with kills above the mean. Consequently, our model appears to exhibit a discernable bias towards one group over the other based on the specified criteria.
