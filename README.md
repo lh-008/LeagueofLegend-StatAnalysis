@@ -1,4 +1,4 @@
-# LeagueofLegend Analysis: Impact of Rift Herald and Predicting Match Outcomes
+# League of Legends Analysis: Impact of Rift Herald and Predicting Match Outcomes
 By: Longhao Lin, Matthew Wong
 
 # Introduction
@@ -159,8 +159,6 @@ In our analysis of missingness dependency, we wanted to see if the missingness o
 
 **Alternative Hypothesis**: Distribution of `position` when `cspm` is missing is NOT the same as the distribution of `position` when `cspm` is not missing.
 
-Below is the observed distribution of `position` when `cspm` is missing and not missing.
-
 After we performed our permutation tests, we found that the observed statistic for this permutation test is: 0.4274423815183682, and the p-value is 0.0. The plot below shows the empirical distribution of the TVD for the test.
 <iframe
   src="assets/missing_dist1.html"
@@ -168,14 +166,12 @@ After we performed our permutation tests, we found that the observed statistic f
   height="600"
   frameborder="0"
 ></iframe>
+
 Since the p-value is less than the 0.05 significance level, we reject the null hypothesis. Thus, the missingness of `cspm` depends on the `position` column.
 
 **Null Hypothesis**: Distribution of `result` when `cspm` is missing is the same as the distribution of `side` when `cspm` is not missing.
 
 **Alternative Hypothesis**: Distribution of `result` when `cspm` is missing is NOT the same as the distribution of `side` when `cspm` is not missing.
-
-Below is the observed distribution of `result` when `cspm` is missing and not missing.
-input dist
 
 After we performed permutation tests, we found that the observed statistic for this permutation test is: 0.0, and the p-value is 1.0. The plot below shows the empirical distribution of the TVD for the test.
 <iframe
@@ -184,6 +180,7 @@ After we performed permutation tests, we found that the observed statistic for t
   height="600"
   frameborder="0"
 ></iframe>
+
 Since the p-value is greater than the 0.05 significance level, we fail to reject the null hypothesis. Thus, the missingness of `cspm` does not depend on the `result` column.
 
 # Hypothesis Testing
@@ -224,7 +221,7 @@ As a result, we get an accuracy score around **0.74**, a precision score around 
 
 In our final model, we decided to remove `golddiffat15` and `xpdiffat15` from the feature pool because we felt that they were not adding much to the overall prediction that our model was making. In addition to those changes in the features, we added: `kills`, `firstbaron`, `earnedgold`, `damagetochampions`, and `towers`. We added these features to our model because we believe that in the grand scheme of predicting the outcome of a match, what matters is which team’s stats stand out more. If a team is able to farm a high amount of kills, damage, or gold, they have a greater advantage over their opponent which would weigh the outcome of the match in their favor. In addition, if a team is able to destroy more towers or secure the first baron, the team gains extra gold and buffs to their minions, providing an extra advantage. 
 
-Our final model also uses a Random Forest Classifier as opposed to the Decision Tree Classifier that we used in our baseline model. The additional features: `kills`, `earnedgold`, 'damagetochampions', and 'towers' are all quantitative, so we used a StandardScaler Transformer to encode these columns. The feature `firstbaron` was a categorical feature, so we used a OneHotEncoder transformer to encode that column. The hyperparameters that we adjusted were: number of estimators (100, 200, 300, 400), max depth (4, 6, 8), and criterion (entropy, gini). Using a grid search to find the optimal hyperparameters, we found that the best number of estimators is 100, the best max depth is 8, and the best criterion is gini.
+Our final model also uses a Random Forest Classifier as opposed to the Decision Tree Classifier that we used in our baseline model. The additional features: `kills`, `earnedgold`, `damagetochampions`, and `towers` are all quantitative, so we used a StandardScaler Transformer to encode these columns. The feature `firstbaron` was a categorical feature, so we used a OneHotEncoder transformer to encode that column. The hyperparameters that we adjusted were: number of estimators (100, 200, 300, 400), max depth (4, 6, 8), and criterion (entropy, gini). Using a grid search to find the optimal hyperparameters, we found that the best number of estimators is 100, the best max depth is 8, and the best criterion is gini.
 
 |           |    False |     True |   accuracy |
 |:----------|---------:|---------:|-----------:|
