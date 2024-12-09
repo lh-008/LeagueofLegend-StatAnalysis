@@ -3,9 +3,9 @@ By: Longhao Lin, Matthew Wong
 
 # Introduction
 
-League of Legends (LoL) is a widely popular online multiplayer game developed by Riot Games. Among its various game modes, the most iconic one is Summoner's Rift, a 5v5 mode where two teams, blue and red, compete against each other. Each player on the team takes on a unique role, such as a laner (top, mid, bot/adc, or support) or jungler, each contributing to the team's overall gameplay. While the gameplay can be complex and strategic, the ultimate objective of gameis to destroy opponent's nexus for the victory.
+League of Legends (LoL) is a widely popular online multiplayer game developed by Riot Games. Among its various game modes, the most iconic one is Summoner's Rift, a 5v5 mode where two teams, blue and red, compete against each other. Each player on the team takes on a unique role, such as a laner (top, mid, bot/adc, or support) or jungler, each contributing to the team's overall gameplay. While the gameplay can be complex and strategic, the ultimate objective of the game is to destroy opponent's nexus for the victory.
 
-In Summoner's Rift, objectives are one of the most important features of the game. Securing objectives is essential because they provide advantages to the entire team in various ways. For instance, dragons enhance players' stats, taking down turrets grants extra vision and gold, and defeating Baron empowers minions and provides extra gold for the entire team.
+In Summoner's Rift, objectives are one of the most important features of the game. Securing objectives is essential because they provide advantages to the entire team in various ways. For instance, dragons enhance players' stats, taking down turrets grants extra vision and gold, and defeating Barons empowers minions and provides extra gold for the entire team.
 
 For this project, we are particularly interested in understanding the influence of the Rift Herald on in-game statistics. Specifically, our research question is: How does the Rift Herald impact in-game statistics such as gold, experience, and kills in Summoner's Rift matches? To address this question, we will perform exploratory data analysis and use visualizations to discover patterns and identify the Rift Herald's impact in Summoner's Rift.
 
@@ -72,7 +72,7 @@ The empircal distribution is again, very closely to normal. This distribution re
 
 ### Bivariate Analysis
 
-Let's take a look at how Rift Herald impact the outcome of the game using the plot below.
+Let's take a look at how Rift Herald impacts the outcome of the game using the plot below.
 <iframe
   src="assets/win_rate_comparison.html"
   width="800"
@@ -81,7 +81,7 @@ Let's take a look at how Rift Herald impact the outcome of the game using the pl
 ></iframe>
 The plot shows that teams securing the first Rift Herald have a higher win rate compared to those without it. This suggests that the Rift Herald is an important and impactful objective, significantly influencing the outcome of games. Securing this objective likely provides strategic advantages such as early map control or turret pressure, which leads to higher chance of victory.
 
-Let's also take a look at how Rift Herald impact team gold at 15 minutes.
+Let's also take a look at how Rift Herald impacts team gold at 15 minutes.
 <iframe
   src="assets/gold15_comparison.html"
   width="800"
@@ -237,6 +237,8 @@ The accuracy score of our final model is **0.9719934102141681**, meaning that ou
 # Fairness Analysis
 
 In this section, we aim to assess if our model is fair among different groups. The question we want to address here is: “Does my model perform worse for teams who have less kills than the mean amount of kills than it does for teams who have over the mean amount of kills?” To answer this question, we performed a permutation test and examined the result of the difference in accuracy between the two groups.
+
+Group `X` represents the teams who have kills less than the mean, group `Y` represents those who have kills greater or equal to the mean. Our evaluation metric is accuracy, and the significance level is 0.05.
 
 **Null Hypothesis**:
 Our model is fair. Its accuracy for teams with kills above the mean are roughly the same as teams with kills below the mean, and any differences are due to random chance.
