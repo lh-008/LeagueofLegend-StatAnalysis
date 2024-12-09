@@ -168,11 +168,34 @@ In our analysis of missingness dependency, we wanted to see if the missingness o
 
 Below is the observed distribution of `position` when `cspm` is missing and not missing.
 
-input dist
-
 After we performed our permutation tests, we found that the observed statistic for this permutation test is: 0.4274423815183682, and the p-value is 0.0. The plot below shows the empirical distribution of the TVD for the test.
 
-input plot
+<iframe
+  src="assets/missing_1.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
+
+Since the p-value is less than the 0.05 significance level, we reject the null hypothesis. Thus, the missingness of `cspm` depends on the `position` column.
+
+Null Hypothesis: Distribution of `result` when `cspm` is missing is the same as the distribution of `side` when `cspm` is not missing.
+
+Alternative Hypothesis: Distribution of `result` when `cspm` is missing is NOT the same as the distribution of `side` when `cspm` is not missing.
+
+Below is the observed distribution of `result` when `cspm` is missing and not missing.
+input dist
+
+After we performed permutation tests, we found that the observed statistic for this permutation test is: 0.0, and the p-value is 1.0. The plot below shows the empirical distribution of the TVD for the test.
+
+<iframe
+  src="assets/missing_2.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
+
+Since the p-value is greater than the 0.05 significance level, we fail to reject the null hypothesis. Thus, the missingness of `cspm` does not depend on the `result` column.
 
 # Hypothesis Testing
 
@@ -214,7 +237,11 @@ In our final model, we decided to remove `golddiffat15` and `xpdiffat15` from th
 
 Our final model also uses a Random Forest Classifier as opposed to the Decision Tree Classifier that we used in our baseline model. The additional features: `kills`, `earnedgold`, 'damagetochampions', and 'towers' are all quantitative, so we used a StandardScaler Transformer to encode these columns. The feature `firstbaron` was a categorical feature, so we used a OneHotEncoder transformer to encode that column. The hyperparameters that we adjusted were: number of estimators (100, 200, 300, 400), max depth (4, 6, 8), and criterion (entropy, gini). Using a grid search to find the optimal hyperparameters, we found that the best number of estimators is 100, the best max depth is 8, and the best criterion is gini.
 
-input confusion matrix
+|           |    False |     True |   accuracy |
+|:----------|---------:|---------:|-----------:|
+| precision | 0.99213  | 0.955325 |   0.972935 |
+| recall    | 0.953214 | 0.992499 |   0.972935 |
+| f1-score  | 0.972282 | 0.973557 |   0.972935 |
 
 # Fairness Analysis
 
@@ -230,6 +257,11 @@ Our model is unfair. Its accuracy is higher for teams with kills below the mean.
 
 **Significance Level**: 0.05
 
-input dist
+<iframe
+  src="assets/fairness_dist.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
 
 After performing the permutation tests, the p-value we got was 0.0, which is smaller than the 0.05 significance level. As a result, we reject the null hypothesis. This outcome implies that our model predicts teams with kills below the mean more accurately than teams with kills above the mean. Consequently, our model appears to exhibit a discernable bias towards one group over the other based on the specified criteria.
