@@ -154,24 +154,82 @@ Teams that secure the first Rift Herald tend to have stronger overall statistics
 
 # Assessment of Missingness
 
-To be filled.
+### NMAR Analysis
+
+Based on the fact that there is a banning phase, we believe that `ban1`, `ban2`, `ban3`, `ban4`, and `ban5` are Not Missing at Random (NMAR). NMAR is a missingness mechanism where the missingness of a value in a column depends on the value of the missing data itself. Our reasoning behind this is because of how the banning phase works. Before the game, teams are given a set amount of time to pick champions to ban, effectively preventing any of the members on the opposing team from playing them. If a team fails to pick a ban in the given time frame, then the value of that ban will be missing in the data recorded. Because the values in the ban columns can only be missing if the team of the recorded data failed to pick a ban, we believe those columns to be NMAR. Some additional data that we could obtain to explain the missingness of these columns would be another boolean column that specified if a team picked a ban in their time frame or if they did not.
+
+### Missingness Dependency
+
+In our analysis of missingness dependency, we wanted to see if the missingness of the column `cspm` was dependent on the `position` column or the `result` column. For each column, we performed a permutation test on the missingness of `cspm` using the total variation distance (TVD) as our test statistic and a significance level of 0.05.
+
+**Null Hypothesis**: Distribution of `position` when `cspm` is missing is the same as the distribution of `position` when `cspm` is not missing.
+
+**Alternative Hypothesis**: Distribution of `position` when `cspm` is missing is NOT the same as the distribution of `position` when `cspm` is not missing.
+
+Below is the observed distribution of `position` when `cspm` is missing and not missing.
+
+input dist
+
+After we performed our permutation tests, we found that the observed statistic for this permutation test is: 0.4274423815183682, and the p-value is 0.0. The plot below shows the empirical distribution of the TVD for the test.
+
+input plot
 
 # Hypothesis Testing
 
-To be filled.
+For our hypothesis testing, we want to investigate whether securing the first Rift Herald impacts `goldat15`. Specifically, we will compare the distribution of `goldat15` between teams that secured first Rift Herald and those that did not to determine if there is a significant difference. We will use a permutations test and set our significance level to 0.05 to achieve this goal.
+
+**Null Hypothesis**: The distribution of `goldat15` for a team that got the first herald will be the same as the distribution of `goldat15` for teams that did not get first herald.
+
+**Alternative Hypothesis**: The distribution of `goldat15` for a team that got the first herald will not be the same as the distribution of `goldat15` for teams that did not get first herald.
+
+**Test Statistic**: Absolute difference of mean
+
+For the result of permutation test, we get a p-value of 0.0, meaning that we will reject our null hypothesis and favor the alternative hypothesis. This result suggests that distribution of `goldat15` for teams that did and did not get first herald is different. Note that it is important to interpret the result of this hypothesis test as it does not provide absolute correct answer due to the nature of hypothesis testing.
 
 # Framing a Prediction Problem
 
-To be filled.
+Building on our previous analysis, we’ve seen that objectives like the Rift Herald can significantly impact gameplay. This raises the question of whether other objectives, such as dragons, barons, and turrets, have a similar influence. Additionally, beyond objectives, can other in-game statistics(such as gold, experience, and damage) be used to predict the outcome of a match (Victory/Defeat)? To explore this, we will proceed by developing a predictive model to determine the result of a Summoner’s Rift game using the features mentioned above.
+
+**Prediction Problem(Binary Classification)**: We will build a prediction model to predict the result of a match(Win/Lose).
 
 # Baseline Model
 
-To be filled.
+For our baseline model we will use a decision tree classifier to predict the result of a match. We will use four columns below as our features:
+
+`firstherald(nominal)`: true/false values, while true indicates team secured first herald, false indicates team did not secure first Rift Herald
+
+`golddiffat15(continuous)`: Numerical values, it represents the difference in gold between two teams.
+
+`xpdiffat15(continuous)`: Numerical values, it represents the difference in experience between two teams.
+
+`firsttower(nominal)`: true/false values, while true indicates team take down first tower, false indicates team did not take down first tower
+
+We decide to use these features since we believe these features are a good measure to indicate whether a team is at advantage/disadvantage during the match. We will use `OneHotEncoder` to transform `firstherald` and `firsttower` since they are categorical features. We will leave everything else as it is for our baseline model.
+
+As a result, we get an accuracy score around **0.74**, a precision score around **0.742**, a recall score around **0.735** and a f1-score around **0.739**. We believe that this model is decent as our baseline model based on these measurements. However, we believe that there is still a lot of room for improvement as our current classifier might be too simple. To build a more precise and accurate model, we will switch gear from using decision trees to random forest and include/engineer more features that will be relevant to our prediction problem.
 
 # Final Model
 
-To be filled.
+In our final model, we decided to remove `golddiffat15` and `xpdiffat15` from the feature pool because we felt that they were not adding much to the overall prediction that our model was making. In addition to those changes in the features, we added: `kills`, `firstbaron`, `earnedgold`, `damagetochampions`, and `towers`. We added these features to our model because we believe that in the grand scheme of predicting the outcome of a match, what matters is which team’s stats stand out more. If a team is able to farm a high amount of kills, damage, or gold, they have a greater advantage over their opponent which would weigh the outcome of the match in their favor. In addition, if a team is able to destroy more towers or secure the first baron, the team gains extra gold and buffs to their minions, providing an extra advantage. 
+
+Our final model also uses a Random Forest Classifier as opposed to the Decision Tree Classifier that we used in our baseline model. The additional features: `kills`, `earnedgold`, 'damagetochampions', and 'towers' are all quantitative, so we used a StandardScaler Transformer to encode these columns. The feature `firstbaron` was a categorical feature, so we used a OneHotEncoder transformer to encode that column. The hyperparameters that we adjusted were: number of estimators (100, 200, 300, 400), max depth (4, 6, 8), and criterion (entropy, gini). Using a grid search to find the optimal hyperparameters, we found that the best number of estimators is 100, the best max depth is 8, and the best criterion is gini.
+
+input confusion matrix
 
 # Fairness Analysis
 
-To be filled.
+In this section, we aim to assess if our model is fair among different groups. The question we want to address here is: “Does my model perform worse for teams who have less kills than the mean amount of kills than it does for teams who have over the mean amount of kills?” To answer this question, we performed a permutation test and examined the result of the difference in accuracy between the two groups.
+
+**Null Hypothesis**:
+Our model is fair. Its accuracy for teams with kills above the mean are roughly the same as teams with kills below the mean, and any differences are due to random chance.
+
+**Alternative Hypothesis**: 
+Our model is unfair. Its accuracy is higher for teams with kills below the mean.
+
+**Test Statistic**: Difference in accuracy (below minus above mean).
+
+**Significance Level**: 0.05
+
+input dist
+
+After performing the permutation tests, the p-value we got was 0.0, which is smaller than the 0.05 significance level. As a result, we reject the null hypothesis. This outcome implies that our model predicts teams with kills below the mean more accurately than teams with kills above the mean. Consequently, our model appears to exhibit a discernable bias towards one group over the other based on the specified criteria.
